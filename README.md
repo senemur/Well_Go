@@ -1,6 +1,6 @@
 # well_go
 
-Ours graduation project
+This is Senem Ürkmez's and Zehra Karataş's graduation project: AI based Travel Application
 
 ## Getting Started
 
