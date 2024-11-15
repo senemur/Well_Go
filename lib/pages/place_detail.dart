@@ -363,26 +363,33 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             TextButton(
               onPressed: () {},
               child: Container(
+                width: MediaQuery.of(context).size.width *
+                    0.6, // Dinamik genişlik belirle
                 padding: const EdgeInsets.symmetric(
                   vertical: 20,
-                  horizontal: 40,
+                  //horizontal: 40,
                 ),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: kButtonColor),
                 child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center, // Ortala
                   children: [
                     Icon(
                       Icons.confirmation_number_outlined,
                       color: Colors.white,
                     ),
-                    SizedBox(width: 15),
-                    Text(
-                      "Add to Cart",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                    SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        "Add to wish list",
+                        overflow: TextOverflow.ellipsis, // Taşmayı kesmek için
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
