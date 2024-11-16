@@ -7,7 +7,8 @@ import 'package:well_go/widgets/recomendate.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:well_go/pages/question_page.dart';
 
-import '../models/travel_model.dart'; // add this package first for icon
+import '../models/travel_model.dart';
+import 'map_page.dart'; // Harita sayfası
 
 class TravelHomeScreen extends StatefulWidget {
   final Map<String, dynamic> userData; // Kullanıcı verilerini alıyoruz
@@ -18,22 +19,19 @@ class TravelHomeScreen extends StatefulWidget {
 }
 
 class _TravelHomeScreenState extends State<TravelHomeScreen> {
-  int selectedPage = 0;
+  int selectedPage = 0; // Aktif sekme
   List<IconData> icons = [
     Iconsax.home1,
     Icons.map_sharp,
     Icons.bookmark_outline,
     Icons.person_outline,
   ];
-  // for popular items(filter the popular items only from model)
-  // this means only display those data whose category is popular
+
+  // Popüler ve önerilen yerler için filtreleme
   List<TravelDestination> popular =
       myDestination.where((element) => element.category == "popular").toList();
-  // this means only display those data whose category is recomend
   List<TravelDestination> recomendate =
       myDestination.where((element) => element.category == "recomend").toList();
-
-  get userData => null;
 
   @override
   Widget build(BuildContext context) {
@@ -173,17 +171,25 @@ class _TravelHomeScreenState extends State<TravelHomeScreen> {
                                 setState(() {
                                   selectedPage = index;
                                 });
-                                if (index == 3) {
-                                  // Profil iconu için index 3
+                                if (index == 1) {
+                                  // Harita ikonu için index 1
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          ProfileScreen(userData: userData),
+                                          const MapScreen(), // Harita sayfasına yönlendirme
+                                    ),
+                                  );
+                                } else if (index == 3) {
+                                  // Profil iconu için index 3
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfileScreen(
+                                          userData: widget.userData),
                                     ),
                                   );
                                 }
-                                ;
                               },
                               child: Icon(
                                 icons[index],

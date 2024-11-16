@@ -36,19 +36,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
             userData = snapshot.data()!;
           });
         } else {
-          // Eğer veri bulunamazsa varsayılan değerler
+          // Varsayılan kullanıcı bilgileri
           setState(() {
             userData = {
               'firstName': 'Misafir',
               'lastName': '',
               'email': 'Bilinmiyor',
-              'photoUrl':
-                  'assets/images/profile_picture.png' // Varsayılan profil resmi
+              'photoUrl': 'assets/images/profile_picture.png'
             };
           });
         }
       }
     } catch (e) {
+      // Hata durumunda varsayılan değerler
+      setState(() {
+        userData = {
+          'firstName': 'Hata',
+          'lastName': '',
+          'email': 'Kullanıcı verisi alınamadı',
+          'photoUrl': 'assets/images/error_image.png'
+        };
+      });
       print("Veri çekme hatası: $e");
     }
   }
@@ -73,6 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Profil fotoğrafı
                   CircleAvatar(
                     radius: 50,
                     backgroundImage: userData!['photoUrl'] != null
@@ -81,36 +90,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             as ImageProvider,
                   ),
                   const SizedBox(height: 20),
+                  // Kullanıcı adı ve soyadı
                   Text(
                     '${userData!['firstName'] ?? 'Misafir'} ${userData!['lastName'] ?? ''}',
                     style: const TextStyle(
                         fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
+                  // Kullanıcı emaili
                   Text(
                     userData!['email'] ?? 'Bilinmiyor',
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 30),
+                  // Profil düzenleme
                   ListTile(
                     leading: const Icon(Icons.person, color: Colors.black),
                     title: const Text("Edit Profile"),
                     onTap: () {
-                      // Profil düzenleme fonksiyonu
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const Placeholder(), // Düzenleme sayfası eklenecek
+                        ),
+                      );
                     },
                   ),
+                  // Ayarlar
                   ListTile(
                     leading: const Icon(Icons.settings, color: Colors.black),
                     title: const Text("Settings"),
                     onTap: () {
-                      // Ayarlar sayfasına yönlendirme
+                      // Ayarlar ekranına yönlendirme
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text("Ayarlar ekranı henüz eklenmedi.")),
+                      );
                     },
                   ),
+                  // Çıkış yap
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.black),
                     title: const Text("Logout"),
-                    onTap: () {
-                      FirebaseAuth.instance.signOut();
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -120,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             )
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
