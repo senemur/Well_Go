@@ -17,6 +17,8 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController; // Harita kontrolörü
   late Position _currentPosition; // Kullanıcının mevcut konumu
   Set<Marker> _markers = {}; // Harita üzerine yerleştirilecek marker'lar
+  Map<MarkerId, String> markerDescriptions =
+      {}; // Marker'lara ait açıklamaları tutan map
 
   @override
   void initState() {
@@ -54,33 +56,99 @@ class _MapScreenState extends State<MapScreen> {
     });
 
     // Harita üzerinde kullanıcının konumunu göster
+    /*
     mapController.animateCamera(
       CameraUpdate.newLatLng(
           LatLng(_currentPosition.latitude, _currentPosition.longitude)),
     );
+
+     */
   }
 
   void onPageSelected(int index) {
     setState(() {
       selectedPage = index;
     });
-    // Eğer harita sekmesi seçildiyse burada yönlendirme veya diğer işlemleri yapabilirsiniz
   }
 
-  // Marker eklemek için fonksiyon
-  void _addMarker(LatLng position) {
-    setState(() {
-      _markers.add(
-        Marker(
-          markerId: MarkerId(position.toString()),
-          position: position,
-          infoWindow: InfoWindow(
-            title: 'Gezilecek Yer',
-            snippet: 'Burada çok güzel bir yer var!',
+  // Marker eklemek veya kaldırmak için fonksiyon
+  void _addMarker(LatLng position) async {
+    final markerId = MarkerId(position.toString());
+
+    // Eğer marker zaten varsa, kaldırıyoruz
+    if (_markers.any((marker) => marker.markerId == markerId)) {
+      setState(() {
+        _markers.removeWhere((marker) => marker.markerId == markerId);
+        markerDescriptions
+            .remove(markerId); // Marker silindiğinde açıklamayı da kaldırıyoruz
+      });
+    } else {
+      // Eğer marker yoksa, ekliyoruz
+      String description =
+          await _showDescriptionBottomSheet(); // Kullanıcıdan açıklama alıyoruz
+      setState(() {
+        _markers.add(
+          Marker(
+            markerId: markerId,
+            position: position,
+            infoWindow: InfoWindow(
+              title: 'Places',
+              snippet: description, // Kullanıcı tarafından girilen açıklama
+            ),
           ),
-        ),
-      );
-    });
+        );
+        markerDescriptions[markerId] =
+            description; // Açıklamayı map'e kaydediyoruz
+      });
+    }
+  }
+
+  // Kullanıcıdan açıklama almak için BottomSheet kullanıyoruz
+  Future<String> _showDescriptionBottomSheet() async {
+    String description = '';
+    TextEditingController controller = TextEditingController();
+
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Marker Explanation',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: 'Write a comment...',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  description =
+                      value; // Kullanıcı yazıyı girdikçe description değişiyor
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // BottomSheet'i kapatıyoruz
+                },
+                child: const Text('Okay'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    return description;
   }
 
   @override
@@ -103,8 +171,8 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
-                target: LatLng(37.7749, -122.4194), // Başlangıç konumu
-                zoom: 10, // Yakınlaştırma seviyesi
+                target: LatLng(41.0082, 28.9784), // Başlangıç konumu
+                zoom: 15, // Yakınlaştırma seviyesi
               ),
               mapType: MapType.normal,
               onMapCreated: (GoogleMapController controller) {
@@ -112,8 +180,14 @@ class _MapScreenState extends State<MapScreen> {
               },
               markers: _markers, // Eklenen marker'lar
               onTap: (LatLng position) {
-                _addMarker(
-                    position); // Harita üzerinde tıklanarak marker ekleyebiliriz
+                // Harita üzerinde bir yere tıklayınca haritayı o noktaya odaklama
+                mapController.animateCamera(
+                  CameraUpdate.newLatLng(position),
+                );
+              },
+              onLongPress: (LatLng position) {
+                // Harita üzerinde bir yere uzun bastığınızda marker ekleme
+                _addMarker(position);
               },
             ),
           ),

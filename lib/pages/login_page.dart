@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:well_go/pages/profile_page.dart';
 import 'package:well_go/pages/question_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:well_go/const.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences import edildi
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,10 +21,19 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController surnameController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  bool rememberMe = false; // Checkbox durumu
+  late SharedPreferences prefs; // SharedPreferences'i burada tanımladık
+
   void toggleForm() {
     setState(() {
       isLogin = !isLogin;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadCredentials(); // Saklanan bilgileri yükle
   }
 
   // Register işlemi
@@ -39,13 +49,30 @@ class _LoginPageState extends State<LoginPage> {
         'lastName': surnameController.text,
         'email': emailController.text,
       });
-      print("Register successful: ${userCredential.user?.uid}");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => QuestionPage()),
-      );
+
+      // Remember Me'yi kontrol et
+      await saveCredentials(emailController.text, passwordController.text);
+
+      // Kayıt başarılı mesajı gösterme
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Register Successful! Now you can log in."),
+            backgroundColor: kBackgroundColor,
+          ),
+        );
+      }
+      setState(() {
+        isLogin = true;
+      });
     } catch (e) {
-      print("Register Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Kayıt başarısız: $e",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: kButtonColor,
+        ),
+      );
     }
   }
 
@@ -56,7 +83,6 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
-      print("Login successful: ${userCredential.user?.uid}");
       // Kullanıcı bilgilerini Firestore'dan çekme
       var userDoc = await _firestore
           .collection('users')
@@ -64,18 +90,37 @@ class _LoginPageState extends State<LoginPage> {
           .get();
       var userData = userDoc.data();
 
+      // Remember Me'yi kontrol et
+      await saveCredentials(emailController.text, passwordController.text);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => QuestionPage()),
-        /*  MaterialPageRoute(
-          builder: (_) => ProfileScreen(
-              userData:
-                  userData!), // User bilgileri ile ProfileScreen'e yönlendir
-        ),*/
       );
     } catch (e) {
       print("Login Error: $e");
     }
+  }
+
+  // Kullanıcı bilgilerini sakla
+  Future<void> saveCredentials(String email, String password) async {
+    if (rememberMe) {
+      await prefs.setString('email', email);
+      await prefs.setString('password', password);
+    } else {
+      await prefs.remove('email');
+      await prefs.remove('password');
+    }
+  }
+
+  // Saklanan kullanıcı bilgilerini yükle
+  Future<void> loadCredentials() async {
+    prefs = await SharedPreferences
+        .getInstance(); // SharedPreferences'i burada başlatıyoruz
+    setState(() {
+      emailController.text = prefs.getString('email') ?? '';
+      passwordController.text = prefs.getString('password') ?? '';
+    });
   }
 
   @override
@@ -97,15 +142,12 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.black.withOpacity(0.3),
           ),
           SingleChildScrollView(
-            //SAYFADAKİ TAŞMAYI ÖNLEDİK
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
-                  // Column içinde Expanded ile ortalamayı sağlıyoruz
                   children: [
-                    const SizedBox(
-                        height: 175), // FORMU İSTEDİĞİM KADAR AŞAĞI İNDİRDİK
+                    const SizedBox(height: 175),
                     Text(
                       isLogin ? 'Login' : 'Register',
                       style: const TextStyle(
@@ -118,12 +160,12 @@ class _LoginPageState extends State<LoginPage> {
                     if (!isLogin) ...[
                       TextField(
                         controller: nameController,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: kBackgroundColor),
                         decoration: InputDecoration(
                           hintText: 'First Name',
-                          hintStyle: const TextStyle(color: Colors.white70),
+                          hintStyle: const TextStyle(color: kBackgroundColor),
                           prefixIcon:
-                              const Icon(Icons.person, color: Colors.white),
+                              const Icon(Icons.person, color: kButtonColor),
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.2),
                           border: OutlineInputBorder(
@@ -135,12 +177,12 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20),
                       TextField(
                         controller: surnameController,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: kBackgroundColor),
                         decoration: InputDecoration(
                           hintText: 'Last Name',
-                          hintStyle: const TextStyle(color: Colors.white70),
+                          hintStyle: const TextStyle(color: kBackgroundColor),
                           prefixIcon: const Icon(Icons.person_outline,
-                              color: Colors.white),
+                              color: kButtonColor),
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.2),
                           border: OutlineInputBorder(
@@ -153,12 +195,12 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                     TextField(
                       controller: emailController,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: kBackgroundColor),
                       decoration: InputDecoration(
                         hintText: 'Email',
-                        hintStyle: const TextStyle(color: Colors.white70),
+                        hintStyle: const TextStyle(color: kBackgroundColor),
                         prefixIcon:
-                            const Icon(Icons.email, color: Colors.white),
+                            const Icon(Icons.email, color: kButtonColor),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.2),
                         border: OutlineInputBorder(
@@ -171,11 +213,11 @@ class _LoginPageState extends State<LoginPage> {
                     TextField(
                       controller: passwordController,
                       obscureText: true,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: kBackgroundColor),
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        hintStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                        hintStyle: const TextStyle(color: kBackgroundColor),
+                        prefixIcon: const Icon(Icons.lock, color: kButtonColor),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.2),
                         border: OutlineInputBorder(
@@ -191,8 +233,12 @@ class _LoginPageState extends State<LoginPage> {
                         Row(
                           children: [
                             Checkbox(
-                              value: false,
-                              onChanged: (value) {},
+                              value: rememberMe,
+                              onChanged: (value) {
+                                setState(() {
+                                  rememberMe = value!;
+                                });
+                              },
                               activeColor: Colors.white,
                               checkColor: Colors.black,
                             ),
@@ -224,27 +270,29 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         child: Text(
-                          isLogin ? 'Log In' : 'Register',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          isLogin ? 'Login' : 'Register',
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    GestureDetector(
-                      onTap: toggleForm,
-                      child: Text(
-                        isLogin
-                            ? "Don't have an account? REGISTER"
-                            : "Already have an account? LOGIN",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          decoration: TextDecoration.underline,
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          isLogin
+                              ? "Don't have an account?"
+                              : "Already have an account?",
+                          style: const TextStyle(color: Colors.white),
                         ),
-                      ),
+                        TextButton(
+                          onPressed: toggleForm,
+                          child: Text(
+                            isLogin ? 'Sign Up' : 'Login',
+                            style: const TextStyle(color: kButtonColor),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

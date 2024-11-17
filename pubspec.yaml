@@ -41,6 +41,9 @@ dependencies:
   cloud_firestore: ^5.4.4
   google_maps_flutter: ^2.10.0
   geolocator: ^9.0.0
+  # remember me butonuna basınca kaydetmek için
+  shared_preferences: ^2.1.0
+
 
 dev_dependencies:
   flutter_test:
