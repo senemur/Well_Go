@@ -36,13 +36,15 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCl55XpsvWh07CQJBWhwzWJ5FYz5JZx2FY"/>
-    </application>
-    <!-- Required to query activities that can process text, see:
-         https://developer.android.com/training/package-visibility and
-         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+    android:value="your api key"/>
 
-         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+
+</application>
+<!-- Required to query activities that can process text, see:
+https://developer.android.com/training/package-visibility and
+https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
