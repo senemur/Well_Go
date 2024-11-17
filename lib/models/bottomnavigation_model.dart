@@ -48,7 +48,18 @@ class _BottomNavigationModelState extends State<BottomNavigationModel> {
           (index) => GestureDetector(
             onTap: () {
               widget.onPageSelected(index);
-              if (index == 1) {
+              if (index == 0) {
+                // Home ikonu
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TravelHomeScreen(
+                      userData: widget.userData ??
+                          {}, // Kullanıcı verisi parametre olarak gönderiliyor
+                    ),
+                  ),
+                );
+              } else if (index == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
