@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:well_go/models/bottomnavigation_model.dart'; // BottomNavigationModel'ı import ediyoruz
+import 'package:well_go/const.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -24,8 +25,19 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Map View"),
-        backgroundColor: Colors.blue,
+        title: const Text(
+          "Map View",
+          /*style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white), */
+        ),
+        backgroundColor: kBackgroundColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: kButtonColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Column(
         children: [
