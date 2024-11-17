@@ -8,11 +8,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:well_go/pages/question_page.dart';
 
 import '../models/travel_model.dart';
-import 'map_page.dart'; // Harita sayfası
+import 'package:well_go/pages/map_page.dart'; // Harita sayfası
+import 'package:well_go/models/bottomnavigation_model.dart';
 
 class TravelHomeScreen extends StatefulWidget {
   final Map<String, dynamic> userData; // Kullanıcı verilerini alıyoruz
-  const TravelHomeScreen({super.key, required this.userData});
+  const TravelHomeScreen({Key? key, required this.userData}) : super(key: key);
 
   @override
   State<TravelHomeScreen> createState() => _TravelHomeScreenState();
@@ -20,18 +21,19 @@ class TravelHomeScreen extends StatefulWidget {
 
 class _TravelHomeScreenState extends State<TravelHomeScreen> {
   int selectedPage = 0; // Aktif sekme
-  List<IconData> icons = [
-    Iconsax.home1,
-    Icons.map_sharp,
-    Icons.bookmark_outline,
-    Icons.person_outline,
-  ];
 
   // Popüler ve önerilen yerler için filtreleme
   List<TravelDestination> popular =
       myDestination.where((element) => element.category == "popular").toList();
   List<TravelDestination> recomendate =
       myDestination.where((element) => element.category == "recomend").toList();
+
+  void onPageSelected(int index) {
+    setState(() {
+      selectedPage = index;
+    });
+    // Burada herhangi bir başka işlemi de yapabilirsiniz, örneğin sayfa yönlendirme
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,71 +146,12 @@ class _TravelHomeScreenState extends State<TravelHomeScreen> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 22,
-                        ),
-                        decoration: BoxDecoration(
-                          color: kButtonColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(
-                            icons.length,
-                            (index) => GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedPage = index;
-                                });
-                                if (index == 1) {
-                                  // Harita ikonu için index 1
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MapScreen(), // Harita sayfasına yönlendirme
-                                    ),
-                                  );
-                                } else if (index == 3) {
-                                  // Profil iconu için index 3
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProfileScreen(
-                                          userData: widget.userData),
-                                    ),
-                                  );
-                                }
-                              },
-                              child: Icon(
-                                icons[index],
-                                size: 32,
-                                color: selectedPage == index
-                                    ? Colors.white
-                                    : Colors.white.withOpacity(0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )
+
+          // BottomNavigationModel kullanımı
+          BottomNavigationModel(
+            selectedPage: selectedPage,
+            onPageSelected: onPageSelected,
+          ),
         ],
       ),
     );
@@ -228,7 +171,7 @@ class _TravelHomeScreenState extends State<TravelHomeScreen> {
           ),
           SizedBox(width: 5),
           Text(
-            "Kopenhag",
+            "Istanbul",
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 18,

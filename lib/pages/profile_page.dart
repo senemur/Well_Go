@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:well_go/const.dart';
 import 'login_page.dart';
+import 'package:well_go/models/bottomnavigation_model.dart'; // BottomNavigationModel'ı import ediyoruz
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required userData});
+  final Map<String, dynamic>? userData; // userData'yı alıyoruz
+  const ProfileScreen({super.key, required this.userData});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -14,11 +16,20 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Map<String, dynamic>? userData;
+  int selectedPage =
+      3; // Profile sekmesinin varsayılan olarak seçili olduğunu varsayıyoruz
 
   @override
   void initState() {
-    super.initState();
-    fetchUserProfile();
+    super
+        .initState(); // Eğer userData null değilse, widget'tan gelen userData'yı kullanıyoruz
+    if (widget.userData != null) {
+      setState(() {
+        userData = widget.userData!;
+      });
+    } else {
+      fetchUserProfile(); // Firebase'den veri çekmeye devam et
+    }
   }
 
   Future<void> fetchUserProfile() async {
@@ -59,6 +70,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
       print("Veri çekme hatası: $e");
     }
+  }
+
+  void onPageSelected(int index) {
+    setState(() {
+      selectedPage = index;
+    });
+    // Kullanıcı profili sayfasına geldiğinde alt sekmelerin nasıl çalıştığını buradan yönetebilirsiniz
   }
 
   @override
@@ -145,6 +163,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             )
           : const Center(child: CircularProgressIndicator()),
+      // BottomNavigationBar'ı ekliyoruz
+      bottomNavigationBar: BottomNavigationModel(
+        selectedPage: selectedPage,
+        onPageSelected: onPageSelected,
+      ),
     );
   }
 }
