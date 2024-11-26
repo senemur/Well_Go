@@ -46,22 +46,6 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        actions: [
-          Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.black12,
-              ),
-            ),
-            child: const Icon(
-              Icons.bookmark_outline,
-              size: 30,
-            ),
-          ),
-          const SizedBox(width: 10),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -320,79 +304,44 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 10,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Price",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
+            Center(
+              child: TextButton(
+                onPressed: () {},
+                child: Container(
+                  width: MediaQuery.of(context).size.width *
+                      0.6, // Dinamik genişlik belirlemek için
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    //horizontal: 40,
                   ),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '\$${widget.destination.price}',
-                          style: const TextStyle(
-                            fontSize: 23,
-                            fontWeight: FontWeight.w600,
-                            color: blueTextColor,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' / Person',
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: kButtonColor),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center, // Ortala
+                    children: [
+                      Icon(
+                        Icons.bookmark_outline,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
+                          "Add to wish list",
+                          overflow:
+                              TextOverflow.ellipsis, // Taşmayı kesmek için
+                          maxLines: 1,
                           style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
-                            fontSize: 16,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Spacer(),
-            TextButton(
-              onPressed: () {},
-              child: Container(
-                width: MediaQuery.of(context).size.width *
-                    0.6, // Dinamik genişlik belirle
-                padding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  //horizontal: 40,
-                ),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: kButtonColor),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // Ortala
-                  children: [
-                    Icon(
-                      Icons.confirmation_number_outlined,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 10),
-                    Flexible(
-                      child: Text(
-                        "Add to wish list",
-                        overflow: TextOverflow.ellipsis, // Taşmayı kesmek için
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

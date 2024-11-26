@@ -3,14 +3,13 @@ import 'dart:math';
 Random random = Random();
 
 class TravelDestination {
-  final int id, price, review;
+  final int id, review;
   final List<String>? image;
   final String name, description, category, location;
   final double rate;
 
   TravelDestination({
     required this.name,
-    required this.price,
     required this.id,
     required this.category,
     required this.description,
@@ -33,13 +32,11 @@ List<TravelDestination> myDestination = [
     ],
     location: "Beşiktaş,İstanbul",
     review: random.nextInt(300) + 25,
-    price: 0,
     description: description,
     rate: 4.9,
   ),
   TravelDestination(
     id: 7,
-    price: 0,
     name: "Galata Tower",
     image: [
       "https://blog.obilet.com/wp-content/uploads/2021/10/7galatakulesi-min-1920x1280.webp",
@@ -57,7 +54,6 @@ List<TravelDestination> myDestination = [
     id: 3,
     name: "Grand Bazaar",
     review: random.nextInt(300) + 25,
-    price: 0,
     category: 'recomend',
     image: [
       "https://blog.obilet.com/wp-content/uploads/2021/10/18kapalicarsi-min-1920x1282.webp",
@@ -72,7 +68,6 @@ List<TravelDestination> myDestination = [
     id: 8,
     name: "Hagia Sophia Mosque",
     review: random.nextInt(300) + 25,
-    price: 0,
     category: "popular",
     image: [
       "https://blog.obilet.com/wp-content/uploads/2021/10/5ayasofya-min-1024x622.webp",
@@ -87,7 +82,6 @@ List<TravelDestination> myDestination = [
     id: 1,
     name: "İstiklal Street",
     review: random.nextInt(300) + 25,
-    price: 0,
     category: 'recomend',
     image: [
       "https://blog.obilet.com/wp-content/uploads/2021/10/9istiklalcaddesi-min-1920x1275.webp",
@@ -103,7 +97,6 @@ List<TravelDestination> myDestination = [
     name: "Basilica Cistern",
     review: random.nextInt(300) + 25,
     category: "popular",
-    price: 0,
     image: [
       "https://blog.obilet.com/wp-content/uploads/2021/10/6yerebatan-min-1024x683.webp",
       "https://visitturkey.in/wp-content/uploads/2024/07/Basilica-Cistern-1200x900.webp",
@@ -118,7 +111,6 @@ List<TravelDestination> myDestination = [
     name: "Belgrad Forest",
     category: "recomend",
     review: random.nextInt(300) + 25,
-    price: 0,
     image: [
       "https://blog.obilet.com/wp-content/uploads/2021/10/33belgradormani-min-1920x1277.jpeg",
       "https://upload.wikimedia.org/wikipedia/commons/8/83/Belgradormani2.jpg",
@@ -133,7 +125,6 @@ List<TravelDestination> myDestination = [
     name: "Rumeli Fortress ",
     review: random.nextInt(300) + 25,
     category: "recomend",
-    price: 0,
     image: [
       "https://blog.obilet.com/wp-content/uploads/2021/10/35rumelihisari-min-1920x1281.webp",
       "https://www.bosphorustour.com/img/the-castle-at-rumeli-rumeli-hisar.jpg",

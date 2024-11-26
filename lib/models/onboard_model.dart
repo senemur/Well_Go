@@ -13,11 +13,11 @@ List<OnboardModel> onboarding = [
   OnboardModel(
     image:
         'https://i.pinimg.com/736x/59/03/b6/5903b68de4ba528ca4fe0065af7e3ad4.jpg',
-    name: "Natural Beauty of İstanbul",
+    name: "Where East Meets West:\nIstanbul ",
   ),
   OnboardModel(
     image: 'https://cdn.wallpapersafari.com/68/60/oFgMGc.jpg',
-    name: 'Peaceful Mind in Nature',
+    name: 'Lose Yourself in Nature',
   ),
   OnboardModel(
     image:

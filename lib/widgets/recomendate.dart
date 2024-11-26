@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:well_go/const.dart';
+// import 'package:well_go/const.dart';
 import 'package:well_go/models/travel_model.dart';
 
 class Recomendate extends StatelessWidget {
@@ -94,10 +94,10 @@ class Recomendate extends StatelessWidget {
               ],
             ),
           ),
-          Column(
+          const Column(
             children: [
-              const Spacer(),
-              Text.rich(
+              Spacer(),
+              /*Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
@@ -117,6 +117,8 @@ class Recomendate extends StatelessWidget {
                   ],
                 ),
               ),
+
+               */
             ],
           )
         ],
